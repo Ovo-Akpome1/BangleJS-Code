@@ -1,0 +1,56 @@
+
+//Function to draw date on screen:to be called in setInterval
+const drawDate = () => {
+  //create a date object(dateObj) from Date() Class
+  const dateObj = new Date();
+  
+  //use the dateObj to create new vars using the Date() class inbuilt            methotds like getHours, getMunuites...
+  let hours = dateObj.getHours();
+  let mins = dateObj.getMinutes();
+  let secs = dateObj.getSeconds();
+  
+  
+  //Get the date of your current(local) location in string form
+  const dateStr = require('locale').date(dateObj);
+  
+  hours = ("0" + hours).substr(-2);
+  mins = ("0" + mins).substr(-2);
+  secs = ("0" + secs).substr(-2);
+
+  //clear screen everytime we need to print something: so that we don't get the welcome Bangle JS message
+  g.clear();
+  //use the drawString function too draw the variables created with the dateObj
+  
+  g.setFont("Vector",47);
+  g.drawString(`${hours}:${mins}:${secs}`, 30, 90);
+  g.setFont("Vector",28);
+  g.drawString(`${dateStr}`, 30, 140);
+
+  
+};
+
+
+let intervalSetter = setInterval(drawDate, 1000);
+
+
+//stop updates for draw when the LCD display is switched off
+Bangle.on("ledPower", on=>{
+       if(intervalSetter) clearInterval(intervalSetter);
+       intervalSetter = undefined;
+       if(on){
+          intervalSetter = intervalSetter(drawDate, 1000);
+           drawDate();
+           draw();
+       }
+});
+
+
+
+
+
+
+
+
+
+
+
